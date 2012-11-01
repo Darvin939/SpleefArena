@@ -1,0 +1,8 @@
+name: SpleefArena
+main: darvin939.SpleefArena.SpleefArena
+version: 1.3
+description: Spleef Arena Surface Generator. Specifically for MCCity
+commands:
+    spl:
+        description: Help topic
+        usage: /spl help
