@@ -54,22 +54,23 @@ public class SignConfig {
 	public void loadSigns() {
 		int errors = 0;
 		for (String s : cfgSigns.getKeys(false)) {
-			String world = s.split(":")[0];
-			if (plg.getServer().getWorld(world) == null)
-				continue;
-			World w = plg.getServer().getWorld(world);
 			try {
 				ConfigurationSection sec = cfgSigns.getConfigurationSection(s);
+				String world = sec.getString("World");
+				if (plg.getServer().getWorld(world) == null)
+					continue;
+				World w = plg.getServer().getWorld(world);
 				SignData sd = getArea2DFromSection(sec, w);
 				sd.setOwner(plg.getServer().getPlayer(sec.getString("Owner")));
 				sd.setMaterial(Material.getMaterial(sec.getString("Material")));
-				signs.put(sec.getInt("ID"), sd);
+				signs.put(Integer.parseInt(s), sd);
 			} catch (Exception e) {
 				errors++;
 			}
 		}
 		if (errors > 0)
 			plg.getLogger().info(errors + " sign(s) not loaded!");
+
 	}
 
 	public SignData getArea2DFromSection(ConfigurationSection sec, World w) {
@@ -92,8 +93,9 @@ public class SignConfig {
 		int id = 0;
 		for (String s : cfgSigns.getKeys(false)) {
 			try {
-				if (cfgSigns.getConfigurationSection(s).getInt("ID") > id)
-					id = cfgSigns.getConfigurationSection(s).getInt("ID");
+				int ids = Integer.parseInt(s);
+				if (ids > id)
+					id = ids;
 			} catch (Exception e) {
 			}
 		}
@@ -117,6 +119,7 @@ public class SignConfig {
 			if (!cfgSigns.isConfigurationSection(id))
 				cfgSigns.createSection(id);
 			ConfigurationSection section = cfgSigns.getConfigurationSection(id);
+			section.set("World", set.getValue().getWorld().getName());
 			section.set("Owner", set.getValue().getOwner().getName());
 			section.set("Material", set.getValue().getMaterial().name());
 			section.set("Pos1", set.getValue().getMinPoint().getBlockX() + ";" + set.getValue().getMinPoint().getBlockZ());

@@ -12,6 +12,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 
+import darvin939.ItemAPI.ItemAPI;
 import darvin939.SpleefArena.Config;
 import darvin939.SpleefArena.Config.Nodes;
 import darvin939.SpleefArena.SignConfig;
@@ -29,8 +30,7 @@ public class Wand implements Listener {
 	public void onPlayerInteract(PlayerInteractEvent event) {
 		int wand = Nodes.wand_item.getInteger();
 		Player p = event.getPlayer();
-		System.out.println("test");
-		if ((event.getAction() == Action.RIGHT_CLICK_BLOCK) && p.getItemInHand().getTypeId() == wand && plg.hasPermissions(p, "wand")) {
+		if ((event.getAction() == Action.RIGHT_CLICK_BLOCK) && ItemAPI.ID.get(p.getItemInHand().getType()) == wand && plg.hasPermissions(p, "wand")) {
 			Block b = event.getClickedBlock();
 			if (b.getType() == Material.SIGN_POST || b.getType() == Material.WALL_SIGN) {
 				BlockState state = b.getState();

@@ -48,22 +48,7 @@ public class BlockListener implements Listener {
 		}
 	}
 
-	private Block isBlockNearSign(Block b) {
-		for (int z = -1; z <= 1; z++) {
-			for (int x = -1; x <= 1; x++) {
-				for (int y = -1; y <= 1; y++) {
-					Block rel = b.getRelative(x, y, z);
-					if (rel.getType() == Material.SIGN_POST || rel.getType() == Material.WALL_SIGN) {
-						return rel;
-					}
-				}
-			}
-		}
-		return b;
-	}
-
 	public void replaceArena(SignData sd) {
-
 		if (sd != null) {
 			Location l1 = sd.getMinPoint();
 			Location l2 = sd.getMaxPoint();
@@ -75,7 +60,32 @@ public class BlockListener implements Listener {
 					Location repblock = new Location(w, x, y, z);
 					repblock.getBlock().setType(m);
 				}
+		} else {
+			System.out.println("error");
 		}
+	}
+
+	private Block isBlockSign(Block b) {
+		for (int z = -1; z <= 1; z++) {
+			for (int x = -1; x <= 1; x++) {
+				for (int y = -1; y <= 1; y++) {
+					Block rel = b.getRelative(x, y, z);
+					if (rel.getType() == Material.SIGN_POST || rel.getType() == Material.WALL_SIGN) {
+						BlockState state = rel.getState();
+						if ((state instanceof Sign)) {
+							Sign sign = (Sign) state;
+							if (ChatColor.stripColor(sign.getLine(0)).equalsIgnoreCase("[SpleefArena]")) {
+								String line2 = ChatColor.stripColor(sign.getLine(2));
+								if (line2.startsWith("ID: ")) {
+									return rel;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		return b;
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL)
@@ -84,8 +94,8 @@ public class BlockListener implements Listener {
 		int n = event.getNewCurrent();
 		int o = event.getOldCurrent();
 		if ((n != 0) && (o == 0)) {
-			if (isBlockNearSign(b) != b) {
-				Block block = isBlockNearSign(b);
+			if (isBlockSign(b) != b) {
+				Block block = isBlockSign(b);
 				BlockState state = block.getState();
 				if ((state instanceof Sign)) {
 					Sign sign = (Sign) state;
